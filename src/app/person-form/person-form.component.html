@@ -1,0 +1,40 @@
+<div class="form-container">
+    <div class="form-header">
+      <h2>PERSON ADDRESS FORM</h2>
+      <button class="close-btn" (click)="closeForm()">&#x2716;</button>
+    </div>
+  
+    <form (ngSubmit)="submitForm()">
+      <label>Full Name</label>
+    <input type="text" [(ngModel)]="fullName" name="fullname" placeholder="Enter full name" required />
+
+    <label>Phone Number</label>
+    <input type="text" [(ngModel)]="phone" name="phone" placeholder="Enter phone number" required />
+
+    <label>Address</label>
+    <textarea [(ngModel)]="address" name="address" placeholder="Enter address"></textarea>
+
+    <div class="form-row">
+      <div>
+        <label>City</label>
+        <input type="text" [(ngModel)]="city" name="city" placeholder="Enter City" />
+      </div>
+
+      <div>
+        <label>State</label>
+        <input type="text" [(ngModel)]="state" name="state" placeholder="Enter State" />
+      </div>
+
+      <div>
+        <label>Zip Code</label>
+        <input type="text" [(ngModel)]="zip" name="zip" placeholder="Enter Zip Code" />
+      </div>
+    </div>
+  
+      <div class="form-actions">
+        <button class="btn btn-add" type="submit">Add</button>
+        <button class="btn btn-reset" type="reset">Reset</button>
+      </div>
+    </form>
+  </div>
+  
