@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { PersonFormComponent } from './person-form/person-form.component'; // Import the component
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AddressbookService } from './addressbook.service';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, AddressBookComponent, PersonFormComponent],
@@ -19,9 +21,9 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatIconModule,
     CommonModule,
-    FormsModule
+    FormsModule,
   ],
-  providers: [],
+  providers: [AddressbookService, provideHttpClient(withFetch())],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

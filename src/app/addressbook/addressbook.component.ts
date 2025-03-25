@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { PersonFormComponent } from '../person-form/person-form.component';
 import { Person } from '../models/person.model';
+import { AddressbookService } from '../addressbook.service';
 
 @Component({
   selector: 'app-addressbook',
@@ -11,31 +12,72 @@ import { Person } from '../models/person.model';
   templateUrl: './addressbook.component.html',
   styleUrls: ['./addressbook.component.css'],
 })
-export class AddressBookComponent {
+export class AddressBookComponent implements OnInit {
   persons: Person[] = [];
+  editingPerson: Person | null = null;
+  
+  constructor(private addressBookService: AddressbookService) {}
   
   isFormVisible = false;
   
   showForm() {
     this.isFormVisible = true;
+    this.editingPerson = null;
   }
 
   closeForm() {
     this.isFormVisible = false;
   }
 
-  addPersonToList(person: any) {
-    console.log('Before adding:', this.persons);
-    this.persons = [...this.persons, person]; // Spread operator creates a new array
-    console.log('After adding:', this.persons);
-    this.closeForm(); // Hide form after adding data
+  ngOnInit(): void {
+    this.getAllPersons();
   }
 
-  editPerson(person: Person) {
-    console.log('Edit:', person);
+  // Fetch all persons from backend
+  getAllPersons(): void {
+    this.addressBookService.getAllEntries().subscribe(
+      (data:Person[]) => {
+        this.persons = data;
+      },
+      (error) => {
+        console.error('Error fetching persons:', error);
+      }
+    );
   }
 
-  deletePerson(person: Person) {
-    this.persons = this.persons.filter(p => p !== person);
+  // Add a new person
+  addPersonToList(person: Person): void {
+    this.addressBookService.createEntry(person).subscribe({
+      next: (newPerson) => { console.log('Person added:', newPerson); },
+      error: (error) => { console.error('Error:', error); },
+      complete: () => { console.log('Request completed'); }
+    });
+    
   }
+
+  // Edit a person
+  editPerson(person: Person): void {
+    this.editingPerson = person;
+    this.isFormVisible = true;
+  }
+
+  // Delete a person
+  deletePerson(person: { id?: number }) {
+    if (person.id !== undefined) {
+      this.addressBookService.deleteEntry(person.id).subscribe({
+        next: () => { 
+          console.log('Person deleted successfully'); 
+        },
+        error: (error) => { 
+          console.error('Error deleting person:', error); 
+        },
+        complete: () => { 
+          console.log('Delete request completed'); 
+        }
+      });
+    } else {
+      console.error('Error: Person ID is undefined');
+    }
+  }
+  
 }
